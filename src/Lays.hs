@@ -2,20 +2,22 @@ module Lays where
 
 import Random
 import Control.Concurrent (threadDelay)
+import HTTP (newSession, pushCode, Session)
 
 source = ['0'..'9'] ++ ['a' .. 'z']
+codeSize = 6 -- 8
 
-getLaysRandomCode = getRandomElementsFromRange 6 source
-oneSecond = 1000000 
+getLaysRandomCode = getRandomElementsFromRange codeSize source
+seconds = 1000000 
 
-pushLaysCode :: String -> IO (Either String String)
-pushLaysCode code = do 
-    threadDelay oneSecond
-    putStrLn code
-    selectRandomElement [Right "OK", Left "testErr"]
+pushLaysCode :: Session -> String -> IO (Either String Integer)
+pushLaysCode ses code = do 
+    threadDelay (1*seconds)
+    pushCode ses code
+    -- selectRandomElement [Right "OK", Left "testErr"]
 
-pushLaysCodes :: Int -> IO ()
-pushLaysCodes gTryes = pushLaysCodes' gTryes "" prefixes
+pushRandomCodes :: Session -> Int -> IO ()
+pushRandomCodes ses globalTryes = pushLaysCodes' globalTryes "" prefixes
     where
         prefixes = ["cl", "sc", "su", "sk", "sc", "sp", "co"]
 
@@ -24,10 +26,10 @@ pushLaysCodes gTryes = pushLaysCodes' gTryes "" prefixes
         pushLaysCodes' n _ [] = pushLaysCodes' n "" prefixes
         pushLaysCodes' n "" p = getLaysRandomCode >>= \code -> pushLaysCodes' n code p
         pushLaysCodes' tryes code (prefix:px) = do
-            resp <- pushLaysCode (prefix ++ code)
+            resp <- pushLaysCode ses (prefix ++ code)
             case resp of
-                (Right _) -> pushLaysCodes gTryes
-                (Left err) -> print err >> pushLaysCodes' (tryes -1) code px
+                (Right _) -> pushRandomCodes ses globalTryes
+                (Left err) -> putStrLn err >> pushLaysCodes' (tryes -1) code px
 
 
 readGoodCodes :: IO [String]

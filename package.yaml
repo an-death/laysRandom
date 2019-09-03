@@ -26,6 +26,9 @@ dependencies:
 - wreq
 - random
 - bytestring
+- time
+- http-client
+- text
 
 library:
   source-dirs: src

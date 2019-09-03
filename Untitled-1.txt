@@ -22,3 +22,8 @@ curl 'https://laysmusic.ru/method/check_task/' -H 'Cookie: _ga=GA1.2.934041142.1
 {"status":"success","promocode_id":12589019,"points":5}
 
 curl 'https://pass.pepsico.digital/api/auth/token' -H 'Accept: application/json, text/plain, */*' -H 'Referer: https://laysmusic.ru/' -H 'Origin: https://laysmusic.ru' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36' -H 'x-jwt-session: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjoiOWVmOTllNzUtMWRhYS00ZmU2LWJhYmEtMDE0NDU3OWU4MWZlIiwiaWF0IjoxNTY1OTU5ODk0fQ.CqcM68FiXyN9RW7PGPDrAEBeR13ROnOTVH5nFz4bNl4' -H 'X-Project-Id: 837' --compressed
+
+
+
+curl 'https://pass.pepsico.digital/api/auth/token' -H 'Accept: application/json, text/plain, */*' -H 'Referer: https://laysmusic.ru/' -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36' -H 'x-jwt-session: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uIjoiN2YwZmFhYTItNDM3Zi00NWZkLWE0OTQtYTBiNzVhM2I5YzcyIiwiaWF0IjoxNTY3NDMzODk1fQ.gMCnWCoF54CGq6QQEHYv3gUidLSur4FTsdfUyjXlCzM' -H 'X-Project-Id: 837' -H 'Sec-Fetch-Mode: cors' --compressed
+{"jwt":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6IjdmMGZhYWEyLTQzN2YtNDVmZC1hNDk0LWEwYjc1YTNiOWM3MiIsImlhdCI6MTU2NzQzMzk1NX0.RFw9TaJEn7aTuSng1Z2vnrmtw6Z12bNGbn0URRK-uKA"}
