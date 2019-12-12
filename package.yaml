@@ -46,6 +46,12 @@ executables:
     - laysRandom
     - wreq
     - random
+    - lens
+    - lens-aeson
+    - bytestring
+    - time
+    - http-client
+    - text
 
 tests:
   laysRandom-test:

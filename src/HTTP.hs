@@ -44,7 +44,7 @@ newSession prevSession = do
 
 pushCode :: Session -> String -> IO (Either String Integer)
 pushCode session code = do
-    options <- getToken session >>= \t -> newCookieJar _USER_ID (encodeUtf8 t) >>= \jar -> return $ opts jar
+    options <- getToken session >>= \t -> newCodeCookies _USER_ID (encodeUtf8 t) >>= \jar -> return $ opts jar
     r <- push_code options code
 
     case (r ^? responseBody . key "task_id". _String) of 
@@ -71,7 +71,8 @@ pushCode session code = do
 
 requestToken ses = do 
     last_jwt_ses <- readIORef (_jwt_session_id ses)
-    r <- S.getWith (opts last_jwt_ses) httpSession "https://pass.pepsico.digital/api/auth/token"
+    c <- newTokenCookies
+    r <- getWith (opts last_jwt_ses & cookies .~ (Just c)) "https://pass.pepsico.digital/api/auth/token"
 
     case (r ^? responseHeader "X-Jwt-Session") of 
         (Just jwt_ses)   -> updateJWTSessionId jwt_ses >>  return r
@@ -90,20 +91,27 @@ requestToken ses = do
         httpSession = _httpSession ses
         updateJWTSessionId = writeIORef ref 
 
-
-newCookieJar user_id jwt = do
+newCookieJar :: [(Strict.ByteString, Strict.ByteString)] -> IO HTTPClient.CookieJar
+newCookieJar cookies = do
     now <- Time.getCurrentTime
     let expires = Time.addUTCTime (days 30) now
         cookieCreate name value =  HTTPClient.Cookie name value expires "laysmusic.ru" "/" now now True True False False
-        jar = HTTPClient.createCookieJar [
-              cookieCreate "bp_jwt_token" jwt 
-            , cookieCreate "bp_user_guid" user_id
-            , cookieCreate "_ga" "GA1.2.934041142.1563707695"
-            , cookieCreate "_gid" "GA1.2.1809806867.1563707695"
-            , cookieCreate "_ym_uid" "1563707695974707088"
-            , cookieCreate "_ym_d" "1563707695"
-            , cookieCreate "_ym_isad" "1"
-            , cookieCreate "_ym_visorc_54045625" "w"
-            , cookieCreate "_gat_UA-90926084-3" "1" 
-            ]
+        jar = HTTPClient.createCookieJar $ map (uncurry cookieCreate) cookies
     return jar
+
+newCodeCookies user_id jwt = newCookieJar [
+        ("bp_jwt_token", jwt)
+      , ("bp_user_guid", user_id)
+--      , ("_ga", "GA1.2.934041142.1563707695")
+--      , ("_gid", "GA1.2.1809806867.1563707695")
+--      , ("_ym_uid", "1563707695974707088")
+--      , ("_ym_d", "1563707695")
+--      , ("_ym_isad", "1")
+--      , ("_ym_visorc_54045625", "w")
+--      , ("_gat_UA-90926084-3", "1")
+    ]
+
+newTokenCookies = newCookieJar [
+    ("uws:sess", "2eac0242-0068-4f82-9ad0-7dd6f90b55d9"),
+    ("uws:sess.sig", "pClQfIuDp1mJ_aYedeEsCUtq6-I")
+    ]
